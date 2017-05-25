@@ -43,85 +43,43 @@ public class Wheel {
 	}
 
 	public void up(int speed, int time) {
-		if (mode) {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.forward();
-			rightMotor.forward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		} else {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.backward();
-			rightMotor.backward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		}
-
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		leftMotor.forward();
+		rightMotor.forward();
+		Delay.msDelay(time);
+		leftMotor.setSpeed(0);
+		rightMotor.setSpeed(0);
 	}
 
 	public void down(int speed, int time) {
-		if (mode) {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.backward();
-			rightMotor.backward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		} else {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.forward();
-			rightMotor.forward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		}
-
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		leftMotor.backward();
+		rightMotor.backward();
+		Delay.msDelay(time);
+		leftMotor.setSpeed(0);
+		rightMotor.setSpeed(0);
 	}
 
 	public void left(int speed, int time) {
-		if (mode) {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.backward();
-			rightMotor.forward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		} else {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.forward();
-			rightMotor.backward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		}
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		leftMotor.backward();
+		rightMotor.forward();
+		Delay.msDelay(time);
+		leftMotor.setSpeed(0);
+		rightMotor.setSpeed(0);
 	}
 
 	public void right(int speed, int time) {
-		if (mode) {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.forward();
-			rightMotor.backward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		} else {
-			leftMotor.setSpeed(speed);
-			rightMotor.setSpeed(speed);
-			leftMotor.backward();
-			rightMotor.forward();
-			Delay.msDelay(time);
-			leftMotor.setSpeed(0);
-			rightMotor.setSpeed(0);
-		}
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		leftMotor.forward();
+		rightMotor.backward();
+		Delay.msDelay(time);
+		leftMotor.setSpeed(0);
+		rightMotor.setSpeed(0);
 
 	}
 
@@ -170,19 +128,6 @@ public class Wheel {
 	}
 
 	public void forwardUntiHitSpot() {
-		//escape from black
-		while (true) {
-			sample = getSample();
-			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
-				if (mode) {
-					down(default_speed, default_time);
-				} else {
-					up(default_speed, default_time);
-				}
-			} else {
-				break;
-			}
-		}
 		// lets move
 		while (true) {
 			sample = getSample();
@@ -192,31 +137,47 @@ public class Wheel {
 
 			// white
 			if (sample[0] > 0.2 && sample[1] > 0.2 && sample[2] > 0.2) {
-				down(default_speed, default_time);
-				// System.out.println("white");
+				if (mode) {
+					down(default_speed, default_time);
+				} else {
+					up(default_speed, default_time);
+				}
+				System.out.println("white");
 			} else
 			// black
 			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
-				// System.out.println("black");
+				System.out.println("black");
 				break;
 			} else
 			// red
 			if (sample[0] > 0.2) {
-				up(default_speed, default_time);
-				// System.out.println("red");
+				if (mode) {
+					up(default_speed, default_time);
+				} else {
+					down(default_speed, default_time);
+				}
+				System.out.println("red");
 			} else
 			// green
 			if (sample[1] > 0.2) {
-				right(default_speed, default_time);
-				// System.out.println("green");
+				if (mode) {
+					left(default_speed, default_time);
+				} else {
+					right(default_speed, default_time);
+				}
+				System.out.println("green");
 			} else
 			// blue
 			{
-				left(default_speed, default_time);
-				// System.out.println("blue");
+				if (mode) {
+					right(default_speed, default_time);
+				} else {
+					left(default_speed, default_time);
+				}
+				System.out.println("blue");
 			}
 		}
-		setMode(true);
+		mode = true;
 	}
 
 	public void moveToSpotCenter() {
@@ -225,6 +186,39 @@ public class Wheel {
 			sample = getSample();
 			// red || white
 			if (sample[0] > 0.2) {
+				break;
+			}
+		}
+	}
+
+	public void escapeBlack() {
+		// escape from black using for turn left|right
+		while (true) {
+			sample = getSample();
+			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
+				up(default_speed, default_time);
+			} else {
+				break;
+			}
+		}
+	}
+
+	public void backwardThroughBlack() {
+		// escape from black using for turn left|right
+		boolean hitBlack = false;
+		while (true) {
+			sample = getSample();
+			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
+				break;
+			} else {
+				down(default_speed, default_time);
+			}
+		}
+		while (true) {
+			sample = getSample();
+			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
+				down(default_speed, default_time);
+			} else {
 				break;
 			}
 		}
