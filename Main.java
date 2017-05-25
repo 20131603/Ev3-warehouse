@@ -53,7 +53,7 @@ public class Main {
 		}
 		
 		writer.println("Hello");
-		char[] msg = null;
+		char[] msg = new char[1280];
 		try {
 			
 			//oliver
@@ -61,6 +61,7 @@ public class Main {
 			String messageString = "";
 			messageString += new String(msg, 0, bytesRead);
 			System.out.println("MESSAGE: " + messageString);
+			
 			
 			//hoang
 //			int bytesRead = 0;
