@@ -1,11 +1,12 @@
-package main;
-
+package warehouse.robot.t4.Ev3warehouse;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
 public class Fork {
-	protected RegulatedMotor frontMotor = Motor.A;
+	protected EV3MediumRegulatedMotor frontMotor = new EV3MediumRegulatedMotor(MotorPort.A);
 
 	public Fork() {
 		frontMotor.setAcceleration(400);

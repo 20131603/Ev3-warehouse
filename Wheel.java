@@ -1,40 +1,42 @@
-package main;
+package warehouse.robot.t4.Ev3warehouse;
 
-import java.util.Arrays;
-
-import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
 public class Wheel {
-	protected RegulatedMotor leftMotor = Motor.B;
-	protected RegulatedMotor rightMotor = Motor.C;
+	protected EV3LargeRegulatedMotor leftMotor;
+	protected EV3LargeRegulatedMotor rightMotor;
 	protected EV3GyroSensor gyro = null;
 	protected SampleProvider gyroSamples = null;
 	protected EV3ColorSensor colorSensor;
-	protected SampleProvider sampleProvider;
+	protected SampleProvider colorSamples;
 	protected int sampleSize;
-	protected int default_speed = 100;
+	protected int default_speed = 200;
 	protected int default_time = 50;
 	protected int default_slow_speed = 50;
 	protected float[] sample;
 	protected boolean mode = true;
 
 	float[] angle = { 0.0f };
-	float gyroTacho = 0;
+	float gyroTacho;
 
 	public Wheel() {
-		colorSensor = new EV3ColorSensor(SensorPort.S2);
-		sampleProvider = colorSensor.getRGBMode();
-		sampleSize = sampleProvider.sampleSize();
-		leftMotor.setAcceleration(400);
-		rightMotor.setAcceleration(400);
+		leftMotor = new EV3LargeRegulatedMotor(MotorPort.B);
+		rightMotor = new EV3LargeRegulatedMotor(MotorPort.C);
+		colorSensor = new EV3ColorSensor(SensorPort.S4); //cannot have color in s2 on uppsala robot
 		gyro = new EV3GyroSensor(SensorPort.S1);
+		colorSamples = colorSensor.getRGBMode();
+		sampleSize = colorSamples.sampleSize();
 		gyroSamples = gyro.getAngleMode();
+		leftMotor.setAcceleration(1000);
+		rightMotor.setAcceleration(1000);
+		leftMotor.setSpeed(default_speed);
+		rightMotor.setSpeed(default_speed);
 		mode = true;
 	}
 
@@ -95,6 +97,7 @@ public class Wheel {
 
 	public void resetGyro() {
 		if (gyro != null) {
+			Delay.msDelay(300); //make sure robot is standing still before reset
 			gyro.reset();
 			gyroSamples = gyro.getAngleMode();
 			gyroTacho = 0;
@@ -123,7 +126,7 @@ public class Wheel {
 
 	public float[] getSample() {
 		float[] sample = new float[sampleSize];
-		sampleProvider.fetchSample(sample, 0);
+		colorSamples.fetchSample(sample, 0);
 		return sample;
 	}
 
@@ -131,11 +134,7 @@ public class Wheel {
 		// lets move
 		while (true) {
 			sample = getSample();
-			// System.out.println(String.format("%.2f", sample[0]) + "-" +
-			// String.format("%.2f", sample[1]) + "-"
-			// + String.format("%.2f", sample[2]));
-
-			// white
+			//white
 			if (sample[0] > 0.2 && sample[1] > 0.2 && sample[2] > 0.2) {
 				if (mode) {
 					down(default_speed, default_time);
@@ -179,7 +178,7 @@ public class Wheel {
 		}
 		mode = true;
 	}
-
+/*
 	public void moveToSpotCenter() {
 		while (true) {
 			up(default_speed, default_time);
@@ -202,7 +201,8 @@ public class Wheel {
 			}
 		}
 	}
-
+*/
+	/*
 	public void backwardThroughBlack() {
 		// escape from black using for turn left|right
 		boolean hitBlack = false;
@@ -223,5 +223,6 @@ public class Wheel {
 			}
 		}
 	}
+	*/
 
 }
