@@ -129,12 +129,12 @@ public class Wheel {
 				right();
 			} else
 			// black
-			if (sample[0] <= 0.07 && sample[1] <= 0.07 && sample[2] <= 0.07) {
+			if (sample[0] <= 0.08 && sample[1] <= 0.08 && sample[2] <= 0.08) {
 				System.out.println("black");
 				break;
 			} else
 			// red
-			if (sample[0] > 0.2) {
+			if (sample[0] > sample[1] && sample[0] > sample[2] && sample[0] > 0.08) {
 				System.out.println("red");
 				up(default_speed, default_time);
 			} else
@@ -172,7 +172,9 @@ public class Wheel {
 	
 	boolean checkRed() {
 		sample = getSample();
-		if (sample[0] > 0.15) {
+		if (sample[0] > 0.13 && sample[1] > 0.13 && sample[2] > 0.13) {
+			return false;
+		} else if (sample[0] > 0.15) {
 			return true;
 		} else {
 			return false;

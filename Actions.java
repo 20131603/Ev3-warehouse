@@ -15,8 +15,6 @@ public class Actions {
 			while (true) {
 				if (wheel.getGyroAngleRaw() >= curAngle + 70.0f) {
 					break;
-				} else if (wheel.checkRed()) {
-					break;
 				} else {
 					wheel.rightMotor.forward();
 				}
@@ -26,8 +24,6 @@ public class Actions {
 			wheel.rightMotor.setSpeed(0);
 			while (true) {
 				if (wheel.getGyroAngleRaw() <= curAngle - 70.0f) {
-					break;
-				} else if (wheel.checkRed()) {
 					break;
 				} else {
 					wheel.leftMotor.forward();
@@ -45,7 +41,7 @@ public class Actions {
 		while (true) {
 			if (wheel.getGyroAngleRaw() > curAngle + 170.0f) {
 				break;
-			} else if (wheel.checkRed()) {
+			} else if (wheel.checkRed() && wheel.getGyroAngleRaw() > curAngle + 100.0f) {
 				break;
 			}  else {
 				wheel.rightMotor.forward();
@@ -65,14 +61,14 @@ public class Actions {
 	}
 
 	static public void Pickup(Wheel wheel, Fork fork) {
-		wheel.up(wheel.default_speed, 800);
-		fork.frontMotor.rotate(-300);
-		wheel.down(wheel.default_speed, 800);
+		wheel.up(wheel.default_speed, 1400);
+		fork.frontMotor.rotate(-1000);
+		wheel.down(wheel.default_speed, 1400);
 	}
 
 	static public void Drop(Wheel wheel, Fork fork) {
-		wheel.up(wheel.default_speed, 800);
-		fork.frontMotor.rotate(300);
-		wheel.down(wheel.default_speed, 800);
+		wheel.up(wheel.default_speed, 1400);
+		fork.frontMotor.rotate(1000);
+		wheel.down(wheel.default_speed, 1400);
 	}
 }
