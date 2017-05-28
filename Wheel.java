@@ -16,9 +16,8 @@ public class Wheel {
 	protected EV3ColorSensor colorSensor;
 	protected SampleProvider colorSamples;
 	protected int sampleSize;
-	protected int default_speed = 200;
+	protected int default_speed = 100;
 	protected int default_time = 50;
-	protected int default_slow_speed = 50;
 	protected float[] sample;
 	protected boolean mode = true;
 
@@ -28,13 +27,15 @@ public class Wheel {
 	public Wheel() {
 		leftMotor = new EV3LargeRegulatedMotor(MotorPort.B);
 		rightMotor = new EV3LargeRegulatedMotor(MotorPort.C);
-		colorSensor = new EV3ColorSensor(SensorPort.S4); //cannot have color in s2 on uppsala robot
+		colorSensor = new EV3ColorSensor(SensorPort.S2); // cannot have color in
+															// s2 on uppsala
+															// robot
 		gyro = new EV3GyroSensor(SensorPort.S1);
 		colorSamples = colorSensor.getRGBMode();
 		sampleSize = colorSamples.sampleSize();
 		gyroSamples = gyro.getAngleMode();
-		leftMotor.setAcceleration(1000);
-		rightMotor.setAcceleration(1000);
+		leftMotor.setAcceleration(200);
+		rightMotor.setAcceleration(200);
 		leftMotor.setSpeed(default_speed);
 		rightMotor.setSpeed(default_speed);
 		mode = true;
@@ -64,24 +65,22 @@ public class Wheel {
 		rightMotor.setSpeed(0);
 	}
 
-	public void left(int speed, int time) {
-		leftMotor.setSpeed(speed);
-		rightMotor.setSpeed(speed);
-		leftMotor.backward();
-		rightMotor.forward();
-		Delay.msDelay(time);
+	public void left() {
+		Delay.msDelay(300);
+		leftMotor.setSpeed(default_speed);
+		leftMotor.rotate(-30);
 		leftMotor.setSpeed(0);
-		rightMotor.setSpeed(0);
+		Delay.msDelay(300);
+		up(300,350);
 	}
 
-	public void right(int speed, int time) {
-		leftMotor.setSpeed(speed);
-		rightMotor.setSpeed(speed);
-		leftMotor.forward();
-		rightMotor.backward();
-		Delay.msDelay(time);
-		leftMotor.setSpeed(0);
+	public void right() {
+		Delay.msDelay(300);
+		rightMotor.setSpeed(default_speed);
+		rightMotor.rotate(-30);
 		rightMotor.setSpeed(0);
+		Delay.msDelay(300);
+		up(300,350);
 
 	}
 
@@ -97,30 +96,11 @@ public class Wheel {
 
 	public void resetGyro() {
 		if (gyro != null) {
-			Delay.msDelay(300); //make sure robot is standing still before reset
+			Delay.msDelay(300); // make sure robot is standing still before
+								// reset
 			gyro.reset();
 			gyroSamples = gyro.getAngleMode();
 			gyroTacho = 0;
-		}
-	}
-
-	public void left90() {
-		this.resetGyro();
-		while (true) {
-			this.left(100, 50);
-			if (this.getGyroAngle() >= 70) {
-				break;
-			}
-		}
-	}
-
-	public void right90() {
-		this.resetGyro();
-		while (true) {
-			this.right(100, 50);
-			if (this.getGyroAngle() <= -70) {
-				break;
-			}
 		}
 	}
 
@@ -131,98 +111,62 @@ public class Wheel {
 	}
 
 	public void forwardUntiHitSpot() {
+		while (true) {
+			sample = getSample();
+			if (sample[0] <= 0.07 && sample[1] <= 0.07 && sample[2] <= 0.07) {
+				up(default_speed, 400);
+			} else {
+				break;
+			}
+		}
+
 		// lets move
 		while (true) {
 			sample = getSample();
-			//white
-			if (sample[0] > 0.2 && sample[1] > 0.2 && sample[2] > 0.2) {
-				if (mode) {
-					down(default_speed, default_time);
-				} else {
-					up(default_speed, default_time);
-				}
+			// white
+			if (sample[0] > 0.13 && sample[1] > 0.13 && sample[2] > 0.13) {
 				System.out.println("white");
+				right();
 			} else
 			// black
-			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
+			if (sample[0] <= 0.07 && sample[1] <= 0.07 && sample[2] <= 0.07) {
 				System.out.println("black");
 				break;
 			} else
 			// red
 			if (sample[0] > 0.2) {
-				if (mode) {
-					up(default_speed, default_time);
-				} else {
-					down(default_speed, default_time);
-				}
 				System.out.println("red");
+				up(default_speed, default_time);
 			} else
 			// green
-			if (sample[1] > 0.2) {
-				if (mode) {
-					left(default_speed, default_time);
-				} else {
-					right(default_speed, default_time);
-				}
+			if (sample[1] > 0.15) {
 				System.out.println("green");
+				if (mode) {
+					left();
+				} else {
+					right();
+				}
 			} else
 			// blue
 			{
-				if (mode) {
-					right(default_speed, default_time);
-				} else {
-					left(default_speed, default_time);
-				}
 				System.out.println("blue");
-			}
-		}
-		mode = true;
-	}
-/*
-	public void moveToSpotCenter() {
-		while (true) {
-			up(default_speed, default_time);
-			sample = getSample();
-			// red || white
-			if (sample[0] > 0.2) {
-				break;
+				if (mode) {
+					right();
+				} else {
+					left();
+				}
 			}
 		}
 	}
 
-	public void escapeBlack() {
-		// escape from black using for turn left|right
+	void backwardUntilGetRed() {
 		while (true) {
 			sample = getSample();
-			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
-				up(default_speed, default_time);
-			} else {
-				break;
-			}
-		}
-	}
-*/
-	/*
-	public void backwardThroughBlack() {
-		// escape from black using for turn left|right
-		boolean hitBlack = false;
-		while (true) {
-			sample = getSample();
-			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
+			if (sample[0] > 0.15) {
 				break;
 			} else {
 				down(default_speed, default_time);
 			}
 		}
-		while (true) {
-			sample = getSample();
-			if (sample[0] < 0.07 && sample[1] < 0.07 && sample[2] < 0.07) {
-				down(default_speed, default_time);
-			} else {
-				break;
-			}
-		}
 	}
-	*/
-
 }

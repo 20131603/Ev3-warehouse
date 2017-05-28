@@ -1,19 +1,13 @@
 package warehouse.robot.t4.Ev3warehouse;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 
-import lejos.hardware.BrickFinder;
-import lejos.hardware.Sound;
 import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.TextLCD;
-import lejos.utility.Delay;
-
 
 public class Main {
 
@@ -28,18 +22,14 @@ public class Main {
 	protected static byte[] messageBytes;
 
 	public static void main(String[] args) {
-		EV3 ev3 = (EV3) BrickFinder.getLocal();
-		final TextLCD lcd = ev3.getTextLCD();
 		messageBytes = new byte[256];
-		
-		String mission = "FFRDFUSFLFFD";
+		 String mission = "FFRFUSFLFFD";
+//		 String mission = "F";
 		Wheel wheel = new Wheel();
 		Fork fork = new Fork();
-		lcd.clear();
+		// setupComm();
 		
-		//setupComm();
 
-		
 		for (int i = 0; i < mission.length(); i++) {
 			switch (mission.charAt(i)) {
 			case 'F':
@@ -75,10 +65,10 @@ public class Main {
 	static void setupSendSocket() {
 		try {
 			inetSocket = new Socket(IP, SOCKET_PORT);
-			//send_Socket.setTcpNoDelay(true);
+			// send_Socket.setTcpNoDelay(true);
 
-			//recieveSocket = new Socket(IP, RECIEVE_PORT);
-			//recieveSocket.setTcpNoDelay(true);
+			// recieveSocket = new Socket(IP, RECIEVE_PORT);
+			// recieveSocket.setTcpNoDelay(true);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -88,46 +78,34 @@ public class Main {
 		}
 	}
 	/*
-	static void retrieveMessage() {
-		try {
+	 * static void retrieveMessage() { try {
+	 * 
+	 * String messageString = "";
+	 * 
+	 * DataInputStream in = new DataInputStream(recieveSocket.getInputStream());
+	 * int bytesRead = 0;
+	 * 
+	 * bytesRead = in.read(messageByte);
+	 * 
+	 * if (bytesRead != -1) { messageString += new String(messageByte, 0,
+	 * bytesRead); System.out.println("MESSAGE: " + messageString);
+	 * 
+	 * Sound.systemSound(true, Sound.ASCENDING); } else {
+	 * 
+	 * System.out.println("No Message"); }
+	 * 
+	 * } catch (IOException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace();
+	 * 
+	 * System.out.println(e.getLocalizedMessage());
+	 * 
+	 * try { recieveSocket = new Socket(IP, RECIEVE_PORT);
+	 * recieveSocket.setTcpNoDelay(true); } catch (IOException e2) { // TODO
+	 * Auto-generated catch block e2.printStackTrace(); } } }
+	 */
 
-			String messageString = "";
+	static void setupComm() {
 
-			DataInputStream in = new DataInputStream(recieveSocket.getInputStream());
-			int bytesRead = 0;
-
-			bytesRead = in.read(messageByte);
-
-			if (bytesRead != -1) {
-				messageString += new String(messageByte, 0, bytesRead);
-				System.out.println("MESSAGE: " + messageString);
-
-				Sound.systemSound(true, Sound.ASCENDING);
-			} else {
-
-				System.out.println("No Message");
-			}
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			System.out.println(e.getLocalizedMessage());
-
-			try {
-				recieveSocket = new Socket(IP, RECIEVE_PORT);
-				recieveSocket.setTcpNoDelay(true);
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-		}
 	}
-*/
-	
-	static void setupComm(){
-		
-	}
-	
-	
+
 }
