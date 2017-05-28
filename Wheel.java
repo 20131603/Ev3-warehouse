@@ -137,9 +137,9 @@ public class Wheel {
 			//white
 			if (sample[0] > 0.2 && sample[1] > 0.2 && sample[2] > 0.2) {
 				if (greenOnRight) {
-					down(default_speed, default_time);
+					down(default_speed, 300);
 				} else {
-					up(default_speed, default_time);
+					up(default_speed, 300);
 				}
 				System.out.println("white");
 			} else

@@ -106,13 +106,14 @@ public class Main {
 				mission = new String(messageBytes, 0, readBytes);
 				System.out.println(mission);
 			}
-
-			int squareNumber = 0;
+			//mission = "FPSFFdS"; //put a test mission here to overwrite server mission
 
 			for (int i = 0; i < mission.length(); i++) {
 				switch (mission.charAt(i)) {
 				case 'F':
 					Actions.Forward(wheel);
+					writer.println("square");
+					writer.flush();
 					break;
 				case 'L':
 					Actions.Turn90(wheel, true);
@@ -141,19 +142,20 @@ public class Main {
 				}			
 			}
 			writer.println("END");
+			writer.flush();
 			if(Button.ESCAPE.isDown()){
 				break;
 			}
 		}
 		try {
 			if (connected && site.equals("hust")) {
+				writer.println("Robot leaving");
+				writer.flush();
 				inetSocket.close();
-				writer.println("Robot leaving");
-				writer.flush();
 			}else if(connected && site.equals("uu")){
-				connection.close();
 				writer.println("Robot leaving");
 				writer.flush();
+				connection.close();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

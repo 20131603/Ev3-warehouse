@@ -45,18 +45,22 @@ public class Actions {
 	}
 	
 	static public void ForkUp(Fork fork){
-		fork.frontMotor.rotate(-1000);
+		fork.frontMotor.rotate(-500); //negative is up
 	}
 	
 	static public void ForkDown(Fork fork){
-		fork.frontMotor.rotate(1000);
+		fork.frontMotor.rotate(500); //positive is down
 	}
 	
 	static public void Pickup(Wheel wheel, Fork fork){
-		
+		wheel.up(wheel.default_speed, 800);
+		fork.frontMotor.rotate(-300);
+		wheel.down(wheel.default_speed, 800);
 	}
 	
 	static public void Drop(Wheel wheel, Fork fork){
-		
+		wheel.up(wheel.default_speed, 800);
+		fork.frontMotor.rotate(300);
+		wheel.down(wheel.default_speed, 800);
 	}
 }
