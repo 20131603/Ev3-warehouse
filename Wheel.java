@@ -71,7 +71,7 @@ public class Wheel {
 		leftMotor.rotate(-30);
 		leftMotor.setSpeed(0);
 		Delay.msDelay(300);
-		up(300,350);
+		up(300, 350);
 	}
 
 	public void right() {
@@ -80,7 +80,7 @@ public class Wheel {
 		rightMotor.rotate(-30);
 		rightMotor.setSpeed(0);
 		Delay.msDelay(300);
-		up(300,350);
+		up(300, 350);
 
 	}
 
@@ -169,7 +169,7 @@ public class Wheel {
 			}
 		}
 	}
-	
+
 	boolean checkRed() {
 		sample = getSample();
 		if (sample[0] > 0.13 && sample[1] > 0.13 && sample[2] > 0.13) {

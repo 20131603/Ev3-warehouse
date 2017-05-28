@@ -89,58 +89,58 @@ public class Main {
 			connected = false;
 		}
 
-//		 wait for mission
-		 while (connected) {
-		 try {
-		 readBytes = reader.read(messageBytes, 0, buffSize);
-		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
-		 if (readBytes != -1) {
-		 mission = new String(messageBytes, 0, readBytes);
-		 System.out.println(mission);
-		 for (int i = 0; i < mission.length(); i++) {
-		 switch (mission.charAt(i)) {
-		 case 'F':
-		 Actions.Forward(wheel);
-		 writer.println("square");
-		 writer.flush();
-		 break;
-		 case 'L':
-		 Actions.Turn90(wheel, true);
-		 break;
-		 case 'R':
-		 Actions.Turn90(wheel, false);
-		 break;
-		 case 'U':
-		 Actions.ForkUp(fork);
-		 break;
-		 case 'D':
-		 Actions.ForkDown(fork);
-		 break;
-		 case 'P':
-		 Actions.Pickup(wheel, fork);
-		 break;
-		 case 'd':
-		 Actions.Drop(wheel, fork);
-		 break;
-		 case 'S':
-		 Actions.Spin(wheel);
-		 break;
-		 case 'I':
-		 wheel.mode = !(wheel.mode);
-		 break;
-		 default:
-		 break;
-		 }
-		 }
-		 }
-		 writer.println("END");
-		 if (Button.ESCAPE.isDown()) {
-		 break;
-		 }
-		 }
+		// wait for mission
+		while (connected) {
+			try {
+				readBytes = reader.read(messageBytes, 0, buffSize);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (readBytes != -1) {
+				mission = new String(messageBytes, 0, readBytes);
+				System.out.println(mission);
+				for (int i = 0; i < mission.length(); i++) {
+					switch (mission.charAt(i)) {
+					case 'F':
+						Actions.Forward(wheel);
+						writer.println("square");
+						writer.flush();
+						break;
+					case 'L':
+						Actions.Turn90(wheel, true);
+						break;
+					case 'R':
+						Actions.Turn90(wheel, false);
+						break;
+					case 'U':
+						Actions.ForkUp(fork);
+						break;
+					case 'D':
+						Actions.ForkDown(fork);
+						break;
+					case 'P':
+						Actions.Pickup(wheel, fork);
+						break;
+					case 'd':
+						Actions.Drop(wheel, fork);
+						break;
+					case 'S':
+						Actions.Spin(wheel);
+						break;
+					case 'I':
+						wheel.mode = !(wheel.mode);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			writer.println("END");
+			if (Button.ESCAPE.isDown()) {
+				break;
+			}
+		}
 		try {
 			if (connected && site.equals("hust")) {
 				inetSocket.close();
@@ -157,42 +157,42 @@ public class Main {
 		}
 		Sound.beepSequence();
 		// for testing
-//		mission = "FFRFPSIFLFFdSI";
-//		for (int i = 0; i < mission.length(); i++) {
-//			switch (mission.charAt(i)) {
-//			case 'F':
-//				Actions.Forward(wheel);
-//				writer.println("square");
-//				writer.flush();
-//				break;
-//			case 'L':
-//				Actions.Turn90(wheel, true);
-//				break;
-//			case 'R':
-//				Actions.Turn90(wheel, false);
-//				break;
-//			case 'U':
-//				Actions.ForkUp(fork);
-//				break;
-//			case 'D':
-//				Actions.ForkDown(fork);
-//				break;
-//			case 'P':
-//				Actions.Pickup(wheel, fork);
-//				break;
-//			case 'd':
-//				Actions.Drop(wheel, fork);
-//				break;
-//			case 'S':
-//				Actions.Spin(wheel);
-//				break;
-//			case 'I':
-//				wheel.mode = !(wheel.mode);
-//				break;
-//			default:
-//				break;
-//			}
-//		}
+		// mission = "FFRFPSIFLFFdSI";
+		// for (int i = 0; i < mission.length(); i++) {
+		// switch (mission.charAt(i)) {
+		// case 'F':
+		// Actions.Forward(wheel);
+		// writer.println("square");
+		// writer.flush();
+		// break;
+		// case 'L':
+		// Actions.Turn90(wheel, true);
+		// break;
+		// case 'R':
+		// Actions.Turn90(wheel, false);
+		// break;
+		// case 'U':
+		// Actions.ForkUp(fork);
+		// break;
+		// case 'D':
+		// Actions.ForkDown(fork);
+		// break;
+		// case 'P':
+		// Actions.Pickup(wheel, fork);
+		// break;
+		// case 'd':
+		// Actions.Drop(wheel, fork);
+		// break;
+		// case 'S':
+		// Actions.Spin(wheel);
+		// break;
+		// case 'I':
+		// wheel.mode = !(wheel.mode);
+		// break;
+		// default:
+		// break;
+		// }
+		// }
 	}
 
 	/*

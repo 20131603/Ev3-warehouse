@@ -43,7 +43,7 @@ public class Actions {
 				break;
 			} else if (wheel.checkRed() && wheel.getGyroAngleRaw() > curAngle + 100.0f) {
 				break;
-			}  else {
+			} else {
 				wheel.rightMotor.forward();
 				wheel.leftMotor.backward();
 			}
