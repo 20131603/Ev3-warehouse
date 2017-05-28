@@ -169,4 +169,13 @@ public class Wheel {
 			}
 		}
 	}
+	
+	boolean checkRed() {
+		sample = getSample();
+		if (sample[0] > 0.15) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
