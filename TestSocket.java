@@ -11,7 +11,7 @@ import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.utility.Delay;
 
-public class Main {
+public class TestSocket {
 
 	protected static final int SEND_PORT = 8051;
 	protected static final int RECIEVE_PORT = 8051;
@@ -35,10 +35,9 @@ public class Main {
 		lcd.clear();
 		setupSendSocket();
 
-		while (true) {
-			Delay.msDelay(100);
-			String a = retrieveMessage("Hello");
-		}
+		mission = retrieveMessage(null);
+		mission = retrieveMessage("00005");
+		stopSocket();
 
 		// for (int i = 0; i < mission.length(); i++) {
 		// switch (mission.charAt(i)) {
@@ -80,23 +79,30 @@ public class Main {
 	static void setupSendSocket() {
 		try {
 			sconnection = new Socket(IP, SEND_PORT);
+			sconnection.setSoTimeout(5000);
 			writer = new PrintWriter(sconnection.getOutputStream());
 			reader = new InputStreamReader(sconnection.getInputStream());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			stopSocket();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			stopSocket();
 		}
 	}
 
 	static String retrieveMessage(String command) {
-		System.out.println("vao day roi ");
-		writer.println(command);
-		char[] msg = new char[100];
+		System.out.println("startttttt");
+		if (command != null) {
+			writer.println(command);
+		}
+		char[] msg = new char[2000];
 		try {
+			System.out.println("start read ");
 			int bytesRead = reader.read(msg);
+			System.out.println("end read byte:" + bytesRead);
 			String messageString = "";
 			messageString += new String(msg, 0, bytesRead);
 			System.out.println("MESSAGE: " + messageString);
@@ -105,7 +111,19 @@ public class Main {
 			// TODO Auto-generated catch block
 			System.out.println("MESSAGE: FAILASDASDASDASD");
 			e.printStackTrace();
+			stopSocket();
 		}
 		return null;
+	}
+	
+	static void stopSocket()
+	{
+		try {
+			sconnection.shutdownOutput();
+			System.out.println("Socket Stoped");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
