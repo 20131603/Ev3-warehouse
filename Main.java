@@ -104,6 +104,8 @@ public class Main {
 					switch (mission.charAt(i)) {
 					case 'F':
 						Actions.Forward(wheel);
+						writer.println("square");
+						writer.flush();
 						break;
 					case 'L':
 						Actions.Turn90(wheel, true);
@@ -133,7 +135,43 @@ public class Main {
 						break;
 					}
 				}
-			}			
+			}
+//			else {
+//				mission = "FFRFUSIFLFFD";
+//				for (int i = 0; i < mission.length(); i++) {
+//					switch (mission.charAt(i)) {
+//					case 'F':
+//						Actions.Forward(wheel);
+//						break;
+//					case 'L':
+//						Actions.Turn90(wheel, true);
+//						break;
+//					case 'R':
+//						Actions.Turn90(wheel, false);
+//						break;
+//					case 'U':
+//						Actions.ForkUp(fork);
+//						break;
+//					case 'D':
+//						Actions.ForkDown(fork);
+//						break;
+//					case 'P':
+//						Actions.Pickup(wheel, fork);
+//						break;
+//					case 'd':
+//						Actions.Drop(wheel, fork);
+//						break;
+//					case 'S':
+//						Actions.Spin(wheel);
+//						break;
+//					case 'I':
+//						wheel.mode = !(wheel.mode);
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//			}
 			writer.println("END");
 			if (Button.ESCAPE.isDown()) {
 				break;
