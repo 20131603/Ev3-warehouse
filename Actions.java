@@ -50,10 +50,14 @@ public class Actions {
 	}
 	
 	static public void Pickup(Wheel wheel, Fork fork){
-		
+		wheel.up(wheel.default_speed, 800);
+		fork.frontMotor.rotate(-300);
+		wheel.down(wheel.default_speed, 800);
 	}
 	
 	static public void Drop(Wheel wheel, Fork fork){
-		
+		wheel.up(wheel.default_speed, 800);
+		fork.frontMotor.rotate(300);
+		wheel.down(wheel.default_speed, 800);
 	}
 }
