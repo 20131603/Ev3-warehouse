@@ -20,7 +20,7 @@ public class Wheel {
 	protected int default_time = 50;
 	protected int default_slow_speed = 50;
 	protected float[] sample;
-	protected boolean mode = true;
+	protected boolean greenOnRight = true;
 
 	float[] angle = { 0.0f };
 	float gyroTacho;
@@ -37,11 +37,11 @@ public class Wheel {
 		rightMotor.setAcceleration(1000);
 		leftMotor.setSpeed(default_speed);
 		rightMotor.setSpeed(default_speed);
-		mode = true;
+		greenOnRight = true;
 	}
 
 	public void setMode(boolean newMode) {
-		mode = newMode;
+		greenOnRight = newMode;
 	}
 
 	public void up(int speed, int time) {
@@ -136,7 +136,7 @@ public class Wheel {
 			sample = getSample();
 			//white
 			if (sample[0] > 0.2 && sample[1] > 0.2 && sample[2] > 0.2) {
-				if (mode) {
+				if (greenOnRight) {
 					down(default_speed, default_time);
 				} else {
 					up(default_speed, default_time);
@@ -150,7 +150,7 @@ public class Wheel {
 			} else
 			// red
 			if (sample[0] > 0.2) {
-				if (mode) {
+				if (greenOnRight) {
 					up(default_speed, default_time);
 				} else {
 					down(default_speed, default_time);
@@ -159,7 +159,7 @@ public class Wheel {
 			} else
 			// green
 			if (sample[1] > 0.2) {
-				if (mode) {
+				if (greenOnRight) {
 					left(default_speed, default_time);
 				} else {
 					right(default_speed, default_time);
@@ -168,7 +168,7 @@ public class Wheel {
 			} else
 			// blue
 			{
-				if (mode) {
+				if (greenOnRight) {
 					right(default_speed, default_time);
 				} else {
 					left(default_speed, default_time);
@@ -176,7 +176,7 @@ public class Wheel {
 				System.out.println("blue");
 			}
 		}
-		mode = true;
+		greenOnRight = true;
 	}
 /*
 	public void moveToSpotCenter() {
