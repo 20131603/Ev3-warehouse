@@ -27,7 +27,7 @@ public class Wheel {
 	public Wheel() {
 		leftMotor = new EV3LargeRegulatedMotor(MotorPort.B);
 		rightMotor = new EV3LargeRegulatedMotor(MotorPort.C);
-		colorSensor = new EV3ColorSensor(SensorPort.S2); // cannot have color in
+		colorSensor = new EV3ColorSensor(SensorPort.S4); // cannot have color in
 															// s2 on uppsala
 															// robot
 		gyro = new EV3GyroSensor(SensorPort.S1);
@@ -124,7 +124,7 @@ public class Wheel {
 		while (true) {
 			sample = getSample();
 			// white
-			if (sample[0] > 0.13 && sample[1] > 0.13 && sample[2] > 0.13) {
+			if (sample[0] > 0.2 && sample[1] > 2 && sample[2] > 0.2) {
 				System.out.println("white");
 				right();
 			} else
@@ -134,12 +134,12 @@ public class Wheel {
 				break;
 			} else
 			// red
-			if (sample[0] > sample[1] && sample[0] > sample[2] && sample[0] > 0.08) {
+			if (sample[0] > sample[1] && sample[0] > sample[2] && sample[0] > 0.18) {
 				System.out.println("red");
 				up(default_speed, default_time);
 			} else
 			// green
-			if (sample[1] > 0.15) {
+			if (sample[1] > 0.15 && sample[2] < 0.12) {
 				System.out.println("green");
 				if (mode) {
 					left();
@@ -148,13 +148,15 @@ public class Wheel {
 				}
 			} else
 			// blue
-			{
+			if (sample[2] > 0.10 && sample[1] < 0.8) {
 				System.out.println("blue");
 				if (mode) {
 					right();
 				} else {
 					left();
 				}
+			}else{
+				up((int) (default_speed*0.5), default_time);
 			}
 		}
 	}
