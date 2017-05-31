@@ -2,13 +2,10 @@ package warehouse.robot.t4.Ev3warehouse;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 
-import lejos.ev3.tools.LCDDisplay;
 import lejos.hardware.Bluetooth;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
@@ -18,8 +15,6 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.lcd.TextLCD;
 import lejos.remote.nxt.NXTCommConnector;
 import lejos.remote.nxt.NXTConnection;
-import lejos.utility.Delay;
-
 
 public class Main {
 
@@ -34,7 +29,7 @@ public class Main {
 	protected static PrintWriter writer = null;
 	protected static DataInputStream reader = null;
 	protected static byte[] messageBytes;
-	protected static int readBytes;
+	protected static int readBytes = -1;
 	protected static int buffSize = 256;
 	protected static String msg;
 	protected static String site;
@@ -48,30 +43,30 @@ public class Main {
 		final TextLCD lcd = ev3.getTextLCD();
 		messageBytes = new byte[256];
 
-		mission = "UD";
+		mission = "";
 		Wheel wheel = new Wheel();
 		Fork fork = new Fork();
 		lcd.clear();
 
 		LCD.drawString("Select connection:", 0, 0);
 		LCD.drawString("Left: UU Right: HUST", 0, 1);
-		while(true){
+		while (true) {
 			if (Button.LEFT.isDown()) {
 				site = "uu";
 				id = "0";
 				break;
-			}else if(Button.RIGHT.isDown()){
-				site= "hust";
+			} else if (Button.RIGHT.isDown()) {
+				site = "hust";
 				id = "1";
 				break;
 			}
-			
+
 		}
 		lcd.clear();
 		System.out.println("Site is " + site);
-		
+
 		System.out.println(setupComm());
-		//here
+		// here
 		try {
 			readBytes = reader.read(messageBytes, 0, buffSize);
 		} catch (IOException e) {
@@ -81,7 +76,7 @@ public class Main {
 		System.out.println(readBytes);
 		msg = new String(messageBytes, 0, readBytes);
 		System.out.println(msg);
-		if(msg.equals("Connected")){
+		if (msg.equals("Connected")) {
 			System.out.println("Connected to server!");
 			connected = true;
 			System.out.println(connected + ", " + msg);
@@ -89,120 +84,145 @@ public class Main {
 			writer.println(id);
 			writer.flush();
 			System.out.println("Id sent: " + id);
-		}else{
+		} else {
 			System.out.println("Something went wrong in connection!");
 			connected = false;
 		}
 
-		//wait for mission
-		while(connected){
+		//		 wait for mission
+		while (connected) {
 			try {
 				readBytes = reader.read(messageBytes, 0, buffSize);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (readBytes != -1){
+			if (readBytes != -1) {
 				mission = new String(messageBytes, 0, readBytes);
 				System.out.println(mission);
-			}
-			//mission = "FPSFFdS"; //put a test mission here to overwrite server mission
-
-			for (int i = 0; i < mission.length(); i++) {
-				switch (mission.charAt(i)) {
-				case 'F':
-					Actions.Forward(wheel);
-					writer.println("square");
-					writer.flush();
-					break;
-				case 'L':
-					Actions.Turn90(wheel, true);
-					break;
-				case 'R':
-					Actions.Turn90(wheel, false);
-					break;
-				case 'U':
-					Actions.ForkUp(fork);
-					break;
-				case 'D':
-					Actions.ForkDown(fork);
-					break;
-				case 'P':
-					Actions.Pickup(wheel, fork);
-					break;
-				case 'd':
-					Actions.Drop(wheel, fork);
-					break;
-				case 'S':
-					Actions.Spin(wheel);
-				case 'I':
-					wheel.greenOnRight = !(wheel.greenOnRight);
-				default:
-					break;
-				}			
+				for (int i = 0; i < mission.length(); i++) {
+					switch (mission.charAt(i)) {
+					case 'F':
+						Actions.Forward(wheel);
+						writer.println("square");
+						writer.flush();
+						break;
+					case 'L':
+						Actions.Turn90(wheel, true);
+						break;
+					case 'R':
+						Actions.Turn90(wheel, false);
+						break;
+					case 'U':
+						Actions.ForkUp(fork);
+						break;
+					case 'D':
+						Actions.ForkDown(fork);
+						break;
+					case 'P':
+						Actions.Pickup(wheel, fork);
+						break;
+					case 'd':
+						Actions.Drop(wheel, fork);
+						break;
+					case 'S':
+						Actions.Spin(wheel);
+						break;
+					case 'I':
+						wheel.mode = !(wheel.mode);
+						break;
+					default:
+						break;
+					}
+				}
 			}
 			writer.println("END");
-			writer.flush();
-			if(Button.ESCAPE.isDown()){
+			if (Button.ESCAPE.isDown()) {
 				break;
 			}
 		}
 		try {
 			if (connected && site.equals("hust")) {
-				writer.println("Robot leaving");
-				writer.flush();
 				inetSocket.close();
-			}else if(connected && site.equals("uu")){
 				writer.println("Robot leaving");
 				writer.flush();
+			} else if (connected && site.equals("uu")) {
 				connection.close();
+				writer.println("Robot leaving");
+				writer.flush();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Sound.beepSequence();
+		// for testing
+		//		mission = "FFRFPSIFLFFdSI";
+		//		for (int i = 0; i < mission.length(); i++) {
+		//			switch (mission.charAt(i)) {
+		//			case 'F':
+		//				Actions.Forward(wheel);
+		//				writer.println("square");
+		//				writer.flush();
+		//				break;
+		//			case 'L':
+		//				Actions.Turn90(wheel, true);
+		//				break;
+		//			case 'R':
+		//				Actions.Turn90(wheel, false);
+		//				break;
+		//			case 'U':
+		//				Actions.ForkUp(fork);
+		//				break;
+		//			case 'D':
+		//				Actions.ForkDown(fork);
+		//				break;
+		//			case 'P':
+		//				Actions.Pickup(wheel, fork);
+		//				break;
+		//			case 'd':
+		//				Actions.Drop(wheel, fork);
+		//				break;
+		//			case 'S':
+		//				Actions.Spin(wheel);
+		//				break;
+		//			case 'I':
+		//				wheel.mode = !(wheel.mode);
+		//				break;
+		//			default:
+		//				break;
+		//			}
+		//		}
 	}
 
 	/*
-	static void retrieveMessage() {
-		try {
-
-			String messageString = "";
-
-			DataInputStream in = new DataInputStream(recieveSocket.getInputStream());
-			int bytesRead = 0;
-
-			bytesRead = in.read(messageByte);
-
-			if (bytesRead != -1) {
-				messageString += new String(messageByte, 0, bytesRead);
-				System.out.println("MESSAGE: " + messageString);
-
-				Sound.systemSound(true, Sound.ASCENDING);
-			} else {
-
-				System.out.println("No Message");
-			}
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			System.out.println(e.getLocalizedMessage());
-
-			try {
-				recieveSocket = new Socket(IP, RECIEVE_PORT);
-				recieveSocket.setTcpNoDelay(true);
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-		}
-	}
+	 * static void retrieveMessage() { try {
+	 * 
+	 * String messageString = "";
+	 * 
+	 * DataInputStream in = new DataInputStream(recieveSocket.getInputStream());
+	 * int bytesRead = 0;
+	 * 
+	 * bytesRead = in.read(messageByte);
+	 * 
+	 * if (bytesRead != -1) { messageString += new String(messageByte, 0,
+	 * bytesRead); System.out.println("MESSAGE: " + messageString);
+	 * 
+	 * Sound.systemSound(true, Sound.ASCENDING); } else {
+	 * 
+	 * System.out.println("No Message"); }
+	 * 
+	 * } catch (IOException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace();
+	 * 
+	 * System.out.println(e.getLocalizedMessage());
+	 * 
+	 * try { recieveSocket = new Socket(IP, RECIEVE_PORT);
+	 * recieveSocket.setTcpNoDelay(true); } catch (IOException e2) { // TODO
+	 * Auto-generated catch block e2.printStackTrace(); } } }
 	 */
 
-	static boolean setupComm(){
+	static boolean setupComm() {
 		boolean success = false;
 		switch (site) {
 		case "uu":
@@ -222,11 +242,11 @@ public class Main {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (inetSocket.isConnected()){
-				try{
+			if (inetSocket.isConnected()) {
+				try {
 					writer = new PrintWriter(inetSocket.getOutputStream());
-					reader = new DataInputStream(inetSocket.getInputStream());					
-				}catch (IOException e) {
+					reader = new DataInputStream(inetSocket.getInputStream());
+				} catch (IOException e) {
 					// TODO: handle exception
 				}
 			}
@@ -237,6 +257,5 @@ public class Main {
 		}
 		return success;
 	}
-
 
 }
